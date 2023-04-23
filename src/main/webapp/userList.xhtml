@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Users List</title>
+    </h:head>
+    <body>
+        <p:ajaxStatus style="width: 16px;height: 16px;" id="ajaxStatusPanel">
+            <f:facet name="start">
+                <h:graphicImage library="images" name="ajaxloading.gif" />
+            </f:facet>
+            
+            <f:facet name="complete">
+                <h:outputText value="" />
+            </f:facet>
+        </p:ajaxStatus>
+        
+        <h:form id="usersListForm">
+            <p:growl id="messages" showDetail="true" />
+            <p:messages/>
+            
+            <p:dataTable id="usersDataTable" value="#{userBean.users}" var="user" editable="true" rowKey="#{user.idUser}"
+                         selection="#{userBean.selectedUser}" selectionMode="single">
+                
+                <f:facet name="header">
+                    Users List
+                </f:facet>
+                
+                <p:column headerText="Id">
+                    <h:outputText value="#{user.idUser}" />
+                </p:column>
+                
+                <p:column headerText="Name">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{user.name}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{user.name}" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                
+                <p:column headerText="Name">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{user.lastName}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{user.lastName}" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                
+                <p:column headerText="Name">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{user.email}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{user.email}" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                
+                <p:column headerText="Name">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{user.phone}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{user.phone}" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                
+                <f:facet name="footer" >
+                    <p:commandButton value="Back" action="index" />  
+                    <p:spacer height="5px"/>
+                    <p:commandButton value="Add" actionListener="#{userBean.restartSelectedUser}"
+                                     update=":dialogForm" oncomplete="PF('userDialog').show()" />
+                </f:facet>
+                
+                 <p:column headerText="Options" style="width: 50px">
+                    <p:rowEditor/>
+                </p:column>
+                
+                <p:ajax event="rowEdit" listener="#{userBean.editListener}"/>
+                
+            </p:dataTable>
+            
+            <p:contextMenu for="usersDataTable">
+                <p:menuitem value="Delete" update="usersListForm:usersDataTable" icon="ui-icon-close" 
+                            actionListener="#{userBean.deleteUser}" />
+            </p:contextMenu>
+            
+        </h:form>
+        
+        <p:dialog id="userDlg" widgetVar="userDialog" header="Add User" modal="true" showEffect="fade" hideEffect="fade" 
+            resizable="false" >
+            <h:form id="dialogForm">
+                <p:outputPanel id="userDetail" style="text-align: center">
+                    <p:panelGrid id="display" columns="4" columnClasses="label, value" >
+                        <h:outputText value="Name" />
+                        <h:inputText value="#{userBean.selectedUser.name}" />
+                        
+                        <h:outputText value="LastName" />
+                        <h:inputText value="#{userBean.selectedUser.lastName}" />
+                        
+                        <h:outputText value="Email" />
+                        <h:inputText value="#{userBean.selectedUser.email}" />
+                        
+                        <h:outputText value="Phone" />
+                        <h:inputText value="#{userBean.selectedUser.phone}" />
+                        
+                        <f:facet name="footer" >
+                            <p:commandButton value="Add" actionListener="#{userBean.addUser}" 
+                                             update="display,:usersListForm:usersDataTable" oncomplete="PF('userDialog').hide();" />
+                        </f:facet>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+    </body>
+</html>
